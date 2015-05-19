@@ -17,7 +17,7 @@ def fixed_point(flownet):
     node_indices={node:idx for idx,node in enumerate(flownet.nodes())}
 
     if flownet.weight_attr:
-        flows={(u,v):(pressures[node_indices[u]]-pressures[node_indices[v]])*dat[flownet.weight_attr] for (u,v,dat) in flownet.edges()}
+        flows={(u,v):(pressures[node_indices[u]]-pressures[node_indices[v]])*dat[flownet.weight_attr] for (u,v,dat) in flownet.edges(data=True)}
     else:
         flows={(u,v):pressures[node_indices[u]]-pressures[node_indices[v]] for (u,v) in flownet.edges()}
     return flows

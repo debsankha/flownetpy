@@ -35,7 +35,7 @@ def _try_find_fps(ntry,M,Mw, P, tmax=200, tol=10e-4, initguess=None):
 
     large_time=10*np.sqrt(2.0/np.max(P))
    
-    if initguess:
+    if initguess is not None:
         sol=odeint(_kuramoto_ode, initguess, t=[0, tmax,tmax+large_time+np.random.rand(),tmax+2*large_time+np.random.rand()], args=(M,Mw,P))
         if np.linalg.norm(sol[-1,:]-sol[-2,:])<tol and np.linalg.norm(sol[-2,:]-sol[-3,:])<tol:
             return sol[-1], initguess
@@ -64,9 +64,9 @@ def fixed_point(flownet, initguess=None):
     node_indices={node:idx for idx,node in enumerate(flownet.nodes())}
 
     if flownet.weight_attr:
-        flows={(u,v):sin(thetas[node_indices[u]]-thetas[node_indices[v]])*dat[flownet.weight_attr] for (u,v,dat) in flownet.edges()}
+        flows={(u,v):sin(thetas[node_indices[u]]-thetas[node_indices[v]])*dat[flownet.weight_attr] for (u,v,dat) in flownet.edges(data=True)}
     else:
         flows={(u,v):sin(thetas[node_indices[u]]-thetas[node_indices[v]]) for (u,v) in flownet.edges()}
 
-    return flows, {'initguess':initguess}
+    return flows, {'initguess':initguess, 'thetas': thetas}
 
