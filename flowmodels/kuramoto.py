@@ -54,8 +54,8 @@ def _try_find_fps(ntry,M,Mw, P, tmax=200, tol=10e-4, initguess=None):
 
 
 def fixed_point(flownet, initguess=None):
-    M=np.array(nx.incidence_matrix(flownet, oriented=True))
-    Mw=np.array(nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr))
+    M=nx.incidence_matrix(flownet, oriented=True).toarray()	#in new scipy, you get sparse matrix, hence .toarray()
+    Mw=nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr).toarray()
 
     P=np.array([flownet.node[n]['input'] for n in flownet.nodes()])
     
