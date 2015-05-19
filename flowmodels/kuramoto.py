@@ -40,7 +40,7 @@ def _try_find_fps(ntry,M,Mw, P, tmax=200, tol=10e-4, initguess=None):
         if np.linalg.norm(sol[-1,:]-sol[-2,:])<tol and np.linalg.norm(sol[-2,:]-sol[-3,:])<tol:
             return sol[-1], initguess
         else:
-            return None
+            return None, initguess
 
    
     for ntry in range(ntry):
@@ -49,7 +49,8 @@ def _try_find_fps(ntry,M,Mw, P, tmax=200, tol=10e-4, initguess=None):
         sol=odeint(_kuramoto_ode, initguess, t=[0, tmax,tmax+large_time+np.random.rand(),tmax+2*large_time+np.random.rand()], args=(M,Mw,P))
         if np.linalg.norm(sol[-1,:]-sol[-2,:])<tol and np.linalg.norm(sol[-2,:]-sol[-3,:])<tol:
             return sol[-1], initguess
-    return None
+    return None, initguess
+
 
 
 def fixed_point(flownet, initguess=None):
@@ -60,6 +61,8 @@ def fixed_point(flownet, initguess=None):
     
     thetas, initguess=_try_find_fps(100,M,Mw,P, initguess=initguess)
 
+    if thetas is None:
+        return None, {'initguess':initguess}
 
     node_indices={node:idx for idx,node in enumerate(flownet.nodes())}
 
