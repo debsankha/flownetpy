@@ -1,9 +1,23 @@
 import numpy as np
-from scipy.integrate import odeint 
 import networkx as nx
-from math import sin
+from math import sin, asin, pi
 
-def _kuramoto_ode(th,t, M_I,M_I_w, P): 
+from scipy.integrate import ode
+
+TMAX=TMAX
+
+
+def odeint(func, x0, t=None, args=None):
+    r = ode(func).set_integrator('vode', method='bdf')
+    r.set_initial_value(x0, t[0]).set_f_params(*args)
+    
+    res=[]
+    for tnow in t[1:]:
+        r.integrate(tnow)
+        res.append(r.y)    
+    return res
+
+def _kuramoto_ode(t, th, M_I,M_I_w, P): 
     """
     th: theta, array with size=nnodes
     t: time
@@ -16,7 +30,7 @@ def _kuramoto_ode(th,t, M_I,M_I_w, P):
 
 
 
-def _try_find_fps(ntry,M,Mw, P, tmax=200, tol=10e-4, initguess=None):
+def _try_find_fps(ntry,M,Mw, P, tmax=TMAX0, tol=10e-4, initguess=None):
     """
     ntry: number of initial conditions that will be tried to reach a fixed point
     tol: the odesolver ends when the norm of the vector at different stages get less than this
@@ -37,29 +51,80 @@ def _try_find_fps(ntry,M,Mw, P, tmax=200, tol=10e-4, initguess=None):
    
     if initguess is not None:
         sol=odeint(_kuramoto_ode, initguess, t=[0, tmax,tmax+large_time+np.random.rand(),tmax+2*large_time+np.random.rand()], args=(M,Mw,P))
-        if np.linalg.norm(sol[-1,:]-sol[-2,:])<tol and np.linalg.norm(sol[-2,:]-sol[-3,:])<tol:
+        if np.linalg.norm(sol[-1]-sol[-2])<tol and np.linalg.norm(sol[-2]-sol[-3])<tol:
             return sol[-1], initguess
         else:
             return None, initguess
 
    
     for ntry in range(ntry):
-        initguess=np.random.uniform(0,np.pi/2, size)
+        initguess=random_stableop_initguess(size)
     
         sol=odeint(_kuramoto_ode, initguess, t=[0, tmax,tmax+large_time+np.random.rand(),tmax+2*large_time+np.random.rand()], args=(M,Mw,P))
-        if np.linalg.norm(sol[-1,:]-sol[-2,:])<tol and np.linalg.norm(sol[-2,:]-sol[-3,:])<tol:
+        if np.linalg.norm(sol[-1]-sol[-2])<tol and np.linalg.norm(sol[-2]-sol[-3])<tol:
             return sol[-1], initguess
     return None, initguess
 
 
 
-def fixed_point(flownet, initguess=None):
-    M=nx.incidence_matrix(flownet, oriented=True).toarray()	#in new scipy, you get sparse matrix, hence .toarray()
-    Mw=nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr).toarray()
+def _omega(flownet, flows):
+    """
+    Calculates the winding number:
+        (\sum_{i,j \in cycle} asin(\theta_j-\theta_i))/2\pi
+    """
+    omegas=[]
+    for cycle in nx.cycle_basis(flownet):
+        omega=0
+        nnodes=len(cycle)
+        for idx in range(nnodes):
+            (u,v)=(cycle[idx], cycle[(idx+1)%nnodes])
+            try:
+                omega+=asin(flows[(u,v)]/flownet[u][v]['weight'])
+            except KeyError:
+                omega-=asin(flows[(v,u)]/flownet[u][v]['weight'])
+        omega=int(omega/pi/2)
+        omegas.append(omega)
+    return omegas
+
+
+
+
+def random_stableop_initguess(size):
+    low=-np.pi/2
+    high=np.pi/2
+
+    initguess=np.cumsum(np.random.uniform(low=low,high=high, size=size-2))
+    initguess=np.insert(initguess,0,0)
+
+    lastangle=np.fmod(initguess[-1], 2*np.pi)
+    if lastangle>np.pi:
+        lastangle=lastangle/2-np.pi
+    else:
+        lastangle=lastangle/2
+    
+    return np.append(initguess,lastangle)    
+
+
+
+
+
+
+def mod_piby2(angle):
+    rem=angle%(2*np.pi)
+
+    if rem<np.pi:
+        return rem
+    else:
+        return rem-2*np.pi
+
+
+def fixed_point(flownet, initguess=None, extra_output=True):
+    M=np.array(nx.incidence_matrix(flownet, oriented=True))
+    Mw=np.array(nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr))
 
     P=np.array([flownet.node[n]['input'] for n in flownet.nodes()])
     
-    thetas, initguess=_try_find_fps(100,M,Mw,P, initguess=initguess)
+    thetas, initguess=_try_find_fps(TMAX,M,Mw,P, initguess=initguess)
 
     if thetas is None:
         return None, {'initguess':initguess}
@@ -70,6 +135,10 @@ def fixed_point(flownet, initguess=None):
         flows={(u,v):sin(thetas[node_indices[u]]-thetas[node_indices[v]])*dat[flownet.weight_attr] for (u,v,dat) in flownet.edges(data=True)}
     else:
         flows={(u,v):sin(thetas[node_indices[u]]-thetas[node_indices[v]]) for (u,v) in flownet.edges()}
-
-    return flows, {'initguess':initguess, 'thetas': thetas}
+    
+    if extra_output:
+        omega=_omega(flownet, flows)
+        return flows, {'initguess':initguess, 'thetas': thetas, 'omega': omega}
+    else:
+        return flows
 
