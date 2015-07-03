@@ -4,7 +4,7 @@ from math import sin, asin, pi
 
 from scipy.integrate import ode
 
-TMAX=TMAX
+TMAX=100
 
 
 def odeint(func, x0, t=None, args=None):
