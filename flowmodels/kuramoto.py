@@ -127,9 +127,9 @@ def mod_piby2(angle):
 
 
 def fixed_point(flownet, initguess=None, extra_output=True):
-    M = np.array(nx.incidence_matrix(flownet, oriented=True))
-    Mw = np.array(
-        nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr))
+    M = nx.incidence_matrix(flownet, oriented=True).toarray()
+    Mw = nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr).toarray()
+
     P = np.array([flownet.node[n]['input'] for n in flownet.nodes()])
 
     thetas, initguess = _try_find_fps(NTRY, M, Mw, P, initguess=initguess)
@@ -154,9 +154,8 @@ def fixed_point(flownet, initguess=None, extra_output=True):
 
 
 def evolve(flownet, tarr, initguess=None):
-    M = np.array(nx.incidence_matrix(flownet, oriented=True))
-    Mw = np.array(
-        nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr))
+    M = nx.incidence_matrix(flownet, oriented=True).toarray()
+    Mw = nx.incidence_matrix(flownet, oriented=True, weight=flownet.weight_attr).toarray()
     P = np.array([flownet.node[n]['input'] for n in flownet.nodes()])
     
     if initguess is None:
