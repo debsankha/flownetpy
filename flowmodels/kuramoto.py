@@ -35,7 +35,7 @@ def fixed_point(flownet, initguess=None, extra_output=True):
         dat.get(flownet.weight_attr, 1) for (u, v, dat) in flownet.edges(data=True)}
 
     if extra_output:
-        omega = _omega(flownet, flows)
+        omega = _omega(thetas)
         return flows, {'initguess': initguess, 'thetas': thetas, 'omega': omega}
     else:
         return flows
@@ -133,22 +133,21 @@ def _kuramoto_ode(t, th, M_I, M_I_w, P):
 
 
 
-def _omega(flownet, flows):
+def _omega(flownet, thetas):
     """
     Calculates the winding number:
         (\sum_{i,j \in cycle} asin(\theta_j-\theta_i))/2\pi
     """
     omegas = []
+    node2idx = {node:idx for idx, node in enumerate(flownet.nodes())}
     for cycle in nx.cycle_basis(flownet):
         omega = 0
-        nnodes = len(cycle)
-        for idx in range(nnodes):
-            (u, v) = (cycle[idx], cycle[(idx + 1) % nnodes])
-            try:
-                omega += asin(flows[(u, v)] / flownet[u][v]['weight'])
-            except KeyError:
-                omega -= asin(flows[(v, u)] / flownet[u][v]['weight'])
-        omega = int(omega / pi / 2)
+        angles_cycle = np.array([thetas[node2idx[node]]\
+                       for node in cycle])
+        phasediffs_cycle = _mod_pi(angles_cycle - np.roll(angles_cycle, 1))
+
+
+        omega = np.sum(phasediffs_cycle) / pi / 2
         omegas.append(omega)
     return omegas
 
@@ -168,7 +167,8 @@ def _random_stableop_initguess(size):
     initguess = np.cumsum(np.random.uniform(low=low, high=high, size=size - 2))
     initguess = np.insert(initguess, 0, 0)
 
-    lastangle = np.fmod(initguess[-1], 2 * np.pi)
+    lastangle = _mod_pi(initguess[-1])
+
     if lastangle > np.pi:
         lastangle = lastangle / 2 - np.pi
     else:
@@ -181,6 +181,9 @@ def _mod_pi(angle):
     """
     given an angle, returns an equivalent angle
     within the interval [-pi,pi]
+
+    Warning:
+        Result is not well defined for angle = pi*(2k+1)
     """
     rem = np.remainder(angle, 2 * np.pi)
     return np.where(rem<np.pi, rem, rem-2*np.pi)
