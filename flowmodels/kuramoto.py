@@ -5,7 +5,8 @@ import networkx as nx
 from math import sin, asin, pi
 from scipy.integrate import ode
 
-TMAX = 500
+TMAX = 1500
+TOL = 10e-6
 NTRY=10
 
 def fixed_point(flownet, initguess=None, extra_output=True):
@@ -30,17 +31,16 @@ def fixed_point(flownet, initguess=None, extra_output=True):
         return None, {'initguess': initguess}
 
     node_indices = {node: idx for idx, node in enumerate(flownet.nodes())}
-
     flows = {(u, v): sin(thetas[node_indices[u]] - thetas[node_indices[v]])*
         dat.get(flownet.weight_attr, 1) for (u, v, dat) in flownet.edges(data=True)}
 
     if extra_output:
-        omega = _omega(thetas)
+        omega = _omega(flownet, nx.cycle_basis(flownet), thetas)
         return flows, {'initguess': initguess, 'thetas': thetas, 'omega': omega}
     else:
         return flows
 
-def _try_find_fps(ntry, flownet, tmax=TMAX, tol=10e-4, initguess=None):
+def _try_find_fps(ntry, flownet, tmax=TMAX, tol=TOL, initguess=None):
     """
     Tries to find a fixed point of the Kuramoto network. 
 
@@ -58,12 +58,10 @@ def _try_find_fps(ntry, flownet, tmax=TMAX, tol=10e-4, initguess=None):
         If no fixed point is found, returns (None, initguess)
     """
 
-    assert(M.shape[0] == P.shape[0])  # The way it's supposed to be done...
-    size = P.shape[0]
     dt = tmax / 1000
 
     if initguess is not None: # then use the specified initguess    
-        sol = _evolve(flownet, np.array(0, tmax, dt), initguess)
+        sol = _evolve(flownet, np.arange(0, tmax, dt), initguess = initguess)
         if _has_converged(sol):
             return sol[-1], initguess
         else:
@@ -71,7 +69,7 @@ def _try_find_fps(ntry, flownet, tmax=TMAX, tol=10e-4, initguess=None):
     
     for ntry in range(ntry): # otherwise try `ntry` random initguesses
         initguess = _random_stableop_initguess(size)
-        sol = _evolve(flownet, np.array(0, tmax, dt), initguess)
+        sol = _evolve(flownet, np.arange(0, tmax, dt), initguess)
         if _has_converged(sol):
             return sol[-1], initguess
 
@@ -133,14 +131,14 @@ def _kuramoto_ode(t, th, M_I, M_I_w, P):
 
 
 
-def _omega(flownet, thetas):
+def _omega(graph, cycles, thetas):
     """
     Calculates the winding number:
         (\sum_{i,j \in cycle} asin(\theta_j-\theta_i))/2\pi
     """
     omegas = []
-    node2idx = {node:idx for idx, node in enumerate(flownet.nodes())}
-    for cycle in nx.cycle_basis(flownet):
+    node2idx = {node:idx for idx, node in enumerate(graph.nodes())}
+    for cycle in cycles:
         omega = 0
         angles_cycle = np.array([thetas[node2idx[node]]\
                        for node in cycle])
@@ -186,4 +184,4 @@ def _mod_pi(angle):
         Result is not well defined for angle = pi*(2k+1)
     """
     rem = np.remainder(angle, 2 * np.pi)
-    return np.where(rem<np.pi, rem, rem-2*np.pi)
+    return np.where(rem<=np.pi, rem, rem-2*np.pi)
