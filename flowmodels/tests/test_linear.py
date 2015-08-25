@@ -18,5 +18,3 @@ class TestFixedpoint:
         inputs = {node: 1 for node in ring_graph.nodes()}
         self.ring_net = FlowNetwork(ring_graph, inputs, linear)
 
-    
-    def test_

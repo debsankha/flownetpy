@@ -5,6 +5,8 @@ import networkx as nx
 from math import sin, asin, pi
 from scipy.integrate import ode
 
+from .tools import FlowDict
+
 TMAX = 1500
 TOL = 10e-6
 NTRY=10
@@ -31,8 +33,8 @@ def fixed_point(flownet, initguess=None, extra_output=True):
         return None, {'initguess': initguess}
 
     node_indices = {node: idx for idx, node in enumerate(flownet.nodes())}
-    flows = {(u, v): sin(thetas[node_indices[u]] - thetas[node_indices[v]])*
-        dat.get(flownet.weight_attr, 1) for (u, v, dat) in flownet.edges(data=True)}
+    flows = FlowDict({(u, v): sin(thetas[node_indices[u]] - thetas[node_indices[v]])*
+        dat.get(flownet.weight_attr, 1) for (u, v, dat) in flownet.edges(data=True)})
 
     if extra_output:
         omega = _omega(flownet, nx.cycle_basis(flownet), thetas)
@@ -68,7 +70,7 @@ def _try_find_fps(ntry, flownet, tmax=TMAX, tol=TOL, initguess=None):
             return None, initguess
     
     for ntry in range(ntry): # otherwise try `ntry` random initguesses
-        initguess = _random_stableop_initguess(size)
+        initguess = _random_stableop_initguess(flownet.number_of_nodes())
         sol = _evolve(flownet, np.arange(0, tmax, dt), initguess)
         if _has_converged(sol):
             return sol[-1], initguess
