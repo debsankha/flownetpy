@@ -11,11 +11,8 @@ addons:
             - python-scipy
             - python3-scipy
 
-before_install:
-    - pip install hypothesis networkx
-
 install:
-    - python setup.py install   
+    - pip install hypothesis networkx
 
 script:
     - nosetests -vv flownetpy/tests/flowmodels/
