@@ -4,9 +4,14 @@ language:
 python:
     - "2.7"
     - "3.4"
+addons:
+    apt:
+        packages: 
+          - libatlas-base-dev
+          - gfortran
 
 install:
-    - pip install hypothesis networkx scipy
+    - pip install hypothesis networkx scipy numpy
 
 script:
     - nosetests -vv 
