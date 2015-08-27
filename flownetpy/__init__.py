@@ -19,7 +19,7 @@ class FlowNetwork(nx.Graph):
         self.weight_attr = weight
         for node in input.keys():
             self.node[node]['input'] = input[node]
-        
+       
     def fixed_point(self, **kwargs):
         """
         Returns a set of steady state flows in the network, in form of a dictionary, with each edge as a key. With additional parameters that lead to this fixed point, as well. 

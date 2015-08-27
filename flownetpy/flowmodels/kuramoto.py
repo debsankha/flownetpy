@@ -7,7 +7,7 @@ from scipy.integrate import ode
 
 from .tools import FlowDict
 
-TMAX = 1500
+TMAX = 500
 TOL = 10e-6
 NTRY=10
 

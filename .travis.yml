@@ -1,18 +1,21 @@
-language:
-    python
-
+language: python
 python:
-    - "2.7"
-    - "3.4"
+- '2.7'
+- '3.4'
 addons:
-    apt:
-        packages: 
-          - libatlas-base-dev
-          - gfortran
-
+  apt:
+    packages:
+    - libatlas-base-dev
+    - gfortran
 install:
-    - travis_wait pip install hypothesis networkx scipy numpy
-
+- travis_wait pip install hypothesis networkx scipy numpy
 script:
-    - nosetests -vv 
-
+- nosetests -vv
+deploy:
+  provider: pypi
+  user: dmanik
+  password:
+    secure: otODHgQzggAUDamHsRB29OwKObY96Be7z9TPwx3lDadyvuBYfTi2v3uRi9CYMUkWqahn1CpLii0Y1ob5MCEi1lWTPHgjj1VN+xizt/DusiLYsV5ShiLwG1eaHbir0gumugW71vy4HJBipBG5fErleJQQcPO39Sb79FsiYSSPVhQBc42q6Mpisl2fZK84Kg1dV9ADoFxmcZwSjwjZvB8dZt2rnxLGgb9MOnawRXUpWju7PlsuVx4vQ591TAtZIvkuNPjg7CfCaK6IfiDHn0M/76PtcZllJOo6VkfSEZhWAQBZDFD5WnUdCG4Qc2z2Xh4W/jSsvgpPCaGFNz1rglZdMzmCZKSewBil1GKc6gnIBs4AsjaZpXuOZbat+CvgyuAlLgepJPFsykRBa526G2vQ0yENggwfji6lgmJIqzehNkm2NHuadBdCrTaN7jHjJERbb6gn3DNU+mT1PibIJUoFz7dLI+xiwiXIve9fIofv3Da5NuTo45s4fVqX2Xd6m2oyd7HJOKaCn/YrIXjTu/TPQ8oRK5M05R3oGV4ZrFVTFRX3+tGdxb/NlVoDEOPZ/g8AQ7FkgBWfPbEcPxw+RRlybjzZOoxt7zRqwJGvy+ZSUcA6hTtlJcWkIwuV32ghztSC7fVKMMQPwaIZgyq9eMB4hMCSsm/5ZF48P9udr/WlqnY=
+  on:
+    tags: true
+    repo: debsankha/flownetpy
