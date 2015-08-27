@@ -1,4 +1,6 @@
+from __future__ import division, print_function
 import networkx as nx
+__all__ = ['FlowNetwork']
 
 
 class FlowNetwork(nx.Graph):
