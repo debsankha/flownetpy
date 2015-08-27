@@ -1,19 +1,22 @@
-language: python
+language:
+    python
 
 python:
-          - "2.7"
-          - "2.7"
-          - "3.2"
-          - "3.3"
-          - "3.4"
+    - "2.7"
+    - "3.4"
+
+addons:
+    apt:
+        packages:
+            - python-scipy
+            - python3-scipy
 
 before_install:
-          - sudo apt-get update -qq
-          - sudo apt-get install -y libatlas-base-dev gfortran python-numpy python-scipy python3-numpy python3-scipy
+    - pip install hypothesis networkx
 
-
-install: "pip install hypothesis networkx" 
+install:
+    - python setup.py install   
 
 script:
-          - nosetests
+    - nosetests
 
