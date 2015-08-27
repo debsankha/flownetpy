@@ -4,8 +4,8 @@ import hypothesis.strategies as st
 
 from nose.tools import *
 
-from flownetwork import FlowNetwork
-from flowmodels import kuramoto
+from flownetpy import FlowNetwork
+from flownetpy.flowmodels import kuramoto
 
 import numpy as np
 import networkx as nx
@@ -17,9 +17,9 @@ class TestHelperfuncs:
     def test_mod_pi_range(self, x):
         assert(np.abs(kuramoto._mod_pi(x) < np.pi))
 
-    @given(n=st.integers(min_value=-10000, max_value=10000))
+    @given(x=st.lists(st.floats(min_value=-10000, max_value=10000), min_size = 1, max_size = 100))
     def test_mod_pi_sanity(self, x):
-        assert(np.abs(kuramoto._mod_pi(x) < np.pi))
+        assert(np.all(np.abs(kuramoto._mod_pi(x) < np.pi)))
 
     @given(m=st.integers(min_value=-10000, max_value=10000))
     def test_mod_pi_even_pi(self, m):

@@ -3,8 +3,8 @@ import hypothesis.strategies as st
 
 from nose.tools import *
 
-from flownetwork import FlowNetwork
-from flowmodels import linear
+from flownetpy import FlowNetwork
+from flownetpy.flowmodels import linear
 
 import numpy as np
 import networkx as nx
