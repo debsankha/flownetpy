@@ -11,9 +11,13 @@ addons:
             - python-scipy
             - python3-scipy
 
+virtualenv:
+    system_site_packages: true
+
+
 install:
     - pip install hypothesis networkx
 
 script:
-    - nosetests -vv flownetpy/tests/flowmodels/
+    - nosetests -vv 
 
