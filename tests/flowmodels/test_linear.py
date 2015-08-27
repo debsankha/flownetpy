@@ -1,7 +1,6 @@
 from hypothesis import given, assume
 import hypothesis.strategies as st
 
-
 from nose.tools import *
 
 from flownetwork import FlowNetwork

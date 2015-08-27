@@ -12,8 +12,12 @@ import networkx as nx
 
 
 class TestHelperfuncs:
-
+    """ Test the helpedr functions"""
     @given(x=st.floats(min_value=-10000, max_value=10000))
+    def test_mod_pi_range(self, x):
+        assert(np.abs(kuramoto._mod_pi(x) < np.pi))
+
+    @given(n=st.integers(min_value=-10000, max_value=10000))
     def test_mod_pi_sanity(self, x):
         assert(np.abs(kuramoto._mod_pi(x) < np.pi))
 
