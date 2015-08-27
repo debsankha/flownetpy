@@ -11,7 +11,7 @@ addons:
           - gfortran
 
 install:
-    - pip install hypothesis networkx scipy numpy
+    - travis_wait pip install hypothesis networkx scipy numpy
 
 script:
     - nosetests -vv 
