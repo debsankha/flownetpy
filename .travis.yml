@@ -17,7 +17,7 @@ addons:
     - libatlas-base-dev
     - gfortran
 
-install: travis_wait pip install -r requirements.txt --cache-dir $HOME/.cache/pip
+install: pip install -r requirements.txt --cache-dir $HOME/.cache/pip
 
 script:
 - nosetests -vv
