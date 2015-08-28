@@ -1,17 +1,27 @@
+
+sudo: false
+
 language: python
+
+cache:
+    directories:
+       - $HOME/.cache/pip
+
 python:
 - '2.7'
 - '3.4'
-cache: pip
+
 addons:
   apt:
     packages:
     - libatlas-base-dev
     - gfortran
-install:
-- travis_wait pip install hypothesis networkx scipy numpy
+
+install: pip install -r requirements.txt --cache-dir $HOME/.cache/pip
+
 script:
 - nosetests -vv
+
 deploy:
   provider: pypi
   user: dmanik
