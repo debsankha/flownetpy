@@ -115,8 +115,7 @@ setup(
     
     setup_requires=['setuptools_scm'],
 
-    use_scm_version={'version_scheme': version2str,
-                    'local_scheme': local_version2str}, 
+    use_scm_version=True,
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
