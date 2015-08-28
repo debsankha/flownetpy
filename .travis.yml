@@ -17,7 +17,7 @@ addons:
 
 before_install:
     - mkdir -p $HOME/.cache/pip/wheels
-    - travis_wait pip wheel --find-links=$HOME/.cache/pip/wheels --use-wheel --wheel-dir=$HOME?.cache/pip/wheels scipy
+    - travis_wait pip wheel --find-links=$HOME/.cache/pip/wheels --use-wheel --wheel-dir=$HOME/.cache/pip/wheels scipy
     - pip install --no-index --find-links=$HOME/.cache/pip/wheels scipy
 
 script:
