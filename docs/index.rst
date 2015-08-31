@@ -10,10 +10,10 @@ Welcome to flownetpy
 
 Table of Contents
 -----------------
-
 .. toctree::
    :maxdepth: 2
 
-* :ref:`genindex`
+Indices and tables
+==================
 * :ref:`search`
 
