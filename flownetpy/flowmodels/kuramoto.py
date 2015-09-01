@@ -163,18 +163,14 @@ def _random_stableop_initguess(size):
     """
     low = -np.pi / 2
     high = np.pi / 2
-
-    initguess = np.cumsum(np.random.uniform(low=low, high=high, size=size - 2))
+    
+    initguess = np.cumsum(np.random.uniform(low=low, high=high, size=size - 1))
     initguess = np.insert(initguess, 0, 0)
 
-    lastangle = _mod_pi(initguess[-1])
-
-    if lastangle > np.pi:
-        lastangle = lastangle / 2 - np.pi
+    if np.abs(_mod_pi(initguess[-1])) > np.pi/2:
+        return _random_stableop_initguess(size)
     else:
-        lastangle = lastangle / 2
-
-    return np.append(initguess, lastangle)
+        return initguess
 
 
 def _mod_pi(angle):
