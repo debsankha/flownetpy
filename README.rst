@@ -1,9 +1,20 @@
 A python package to study flow networks
 ========================================
+.. image:: https://travis-ci.org/debsankha/flownetpy.svg?branch=master
+   :target: https://travis-ci.org/debsankha/flownetpy
+   :alt: Testing status
+
+.. image:: http://img.shields.io/pypi/v/flownetpy.svg
+  :target: https://pypi.python.org/pypi/flownetpy
+  :alt: PyPI version
+
+.. image:: https://readthedocs.org/projects/flownetpy/?badge=latest
+   :target: http://flownetpy.readthedocs.org/en/latest/
+   :alt: Documentation Status
+
 This package contains tools to simulate a flow
 according to user-definable flowmodels (e.g. linear Poiseuillie flow)
 on any graph.
-
 
 Usage
 =====
