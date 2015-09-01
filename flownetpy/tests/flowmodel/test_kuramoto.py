@@ -5,7 +5,7 @@ import hypothesis.strategies as st
 from nose.tools import *
 
 from flownetpy import FlowNetwork
-from flownetpy.flowmodels import kuramoto
+from flownetpy.flowmodel import kuramoto
 
 import numpy as np
 import networkx as nx
