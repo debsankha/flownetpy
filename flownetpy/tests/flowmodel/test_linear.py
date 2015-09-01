@@ -4,7 +4,7 @@ import hypothesis.strategies as st
 from nose.tools import *
 
 from flownetpy import FlowNetwork
-from flownetpy.flowmodels import linear
+from flownetpy.flowmodel import linear
 
 import numpy as np
 import networkx as nx
