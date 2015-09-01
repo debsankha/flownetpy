@@ -5,7 +5,6 @@
 
 Welcome to flownetpy
 ====================
-
 .. include:: about.rst
 
 Table of Contents
@@ -13,7 +12,9 @@ Table of Contents
 .. toctree::
    :maxdepth: 2
 
+   Formalism <formalism>
+
 Indices and tables
 ==================
-* :ref:`search`
+* :ref:`modindex`
 
