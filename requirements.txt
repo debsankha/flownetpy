@@ -8,3 +8,4 @@ Sphinx==1.2.3
 sphinx-rtd-theme==0.1.8
 sphinxcontrib-napoleon==0.3.11
 alabaster==0.7.6
+releases==0.7.0
