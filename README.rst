@@ -8,8 +8,8 @@ A python package to study flow networks
   :target: https://pypi.python.org/pypi/flownetpy
   :alt: PyPI version
 
-.. image:: https://readthedocs.org/projects/flownetpy/?badge=latest
-   :target: http://flownetpy.readthedocs.org/en/latest/
+.. image:: https://readthedocs.org/projects/flownetpy/badge/?version=latest
+   :target: https://readthedocs.org/projects/flownetpy/?badge=latest
    :alt: Documentation Status
 
 This package contains tools to simulate a flow
