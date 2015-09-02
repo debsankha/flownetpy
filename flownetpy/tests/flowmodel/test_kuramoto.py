@@ -86,7 +86,7 @@ class TestCore:
         for u, v in self.two_node_net.edges():
             self.two_node_net[u][v]['weight'] = 1+dK
 
-        fp_2node, data = self.two_node_net.fixed_point(
+        fp_2node, data = self.two_node_net.steady_flows(
             initguess=np.array([0, 0]))
         assert_almost_equal(fp_2node[(1, 2)], 1, places=4)
 
@@ -96,7 +96,7 @@ class TestCore:
         for u, v in self.ring_net_even.edges():
             self.ring_net_even[u][v]['weight'] = 0.5 + dK
 
-        fp_ring, data = self.ring_net_even.fixed_point(initguess=np.zeros(
+        fp_ring, data = self.ring_net_even.steady_flows(initguess=np.zeros(
             self.ring_net_even.number_of_nodes()))
         assert(np.allclose([flow - (u % 2 - 0.5)
                             for (u, v), flow in fp_ring.items()], 0, atol=1e-6))
@@ -108,7 +108,7 @@ class TestCore:
             self.ring_net_odd[u][v]['weight'] = self.ring_size/4 + dK
 
         nnodes = self.ring_net_odd.number_of_nodes()
-        fp_ring, data = self.ring_net_odd.fixed_point(
+        fp_ring, data = self.ring_net_odd.steady_flows(
             initguess=np.zeros(nnodes))
         fp_ring_array = [fp_ring[(i, (i + 1) % nnodes)] for i in range(nnodes)]
         fp_exact_array = [-1, 0, 1, 2, 1, 0, -1, -2]
@@ -121,7 +121,7 @@ class TestCore:
         for u, v in self.two_node_net.edges():
             self.two_node_net[u][v]['weight'] = 1 - dK
 
-        fp, data = self.two_node_net.fixed_point(
+        fp, data = self.two_node_net.steady_flows(
             initguess=np.array([0, 0]))
         assert_is_none(fp)
 
@@ -130,7 +130,7 @@ class TestCore:
         for u, v in self.ring_net_even.edges():
             self.ring_net_even[u][v]['weight'] = 0.5 - dK
 
-        fp, data = self.ring_net_even.fixed_point()
+        fp, data = self.ring_net_even.steady_flows()
         assert_is_none(fp)
 
     @given(st.floats(min_value=0.0001, max_value=0.1))
@@ -138,6 +138,6 @@ class TestCore:
         for u, v in self.ring_net_odd.edges():
             self.ring_net_odd[u][v]['weight'] = self.ring_size/4 - dK
 
-        fp, data = self.ring_net_odd.fixed_point()
+        fp, data = self.ring_net_odd.steady_flows()
         assert_is_none(fp)
 

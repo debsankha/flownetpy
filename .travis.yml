@@ -23,7 +23,10 @@ before_install:
     - pip install --no-index --find-links=$HOME/.cache/pip/wheels scipy
 
 script:
-- nosetests -vv
+- nosetests -vv --with-coverage --cover-package=flownetpy
+
+after_success:
+- if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then coveralls; fi
 
 deploy:
   provider: pypi

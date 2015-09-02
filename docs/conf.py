@@ -64,7 +64,7 @@ extensions = [
     'alabaster' #theme
 ]
 
-releases_github_path = 'nofrills/flownetpy'
+releases_github_path = 'debsankha/flownetpy'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -140,14 +140,14 @@ html_theme_path = [alabaster.get_path()]
 
 extra_nav_links = OrderedDict()
 extra_nav_links['Package (PyPI)'] = 'http://pypi.python.org/pypi/flownetpy'
-extra_nav_links['Source (GitHub)'] = 'http://github.com/nofrills/flownetpy'
-extra_nav_links['Issues (GitHub)'] = 'http://github.com/nofrills/flownetpy/issues'
+extra_nav_links['Source (GitHub)'] = 'http://github.com/debsankha/flownetpy'
+extra_nav_links['Issues (GitHub)'] = 'http://github.com/debsankha/flownetpy/issues'
 
 html_theme_options = {
     'description': 'A python package for flow network simulations',
     'github_button': True,
     'github_banner': True,
-    'github_user': 'nofrills',
+    'github_user': 'debsankha',
     'github_repo': 'flownetpy',
     'extra_nav_links': extra_nav_links,
     'code_font_size': '0.7em',

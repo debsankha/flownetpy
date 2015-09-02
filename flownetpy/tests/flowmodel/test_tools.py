@@ -1,5 +1,5 @@
-from hypothesis import given, assume
 import hypothesis.strategies as st
+from hypothesis import given
 import numpy as np
 
 from flownetpy.flowmodel.tools import FlowDict

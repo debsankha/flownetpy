@@ -5,7 +5,7 @@ from .tools import FlowDict
 
 # The linear Poiseullie flow in a network
 
-def fixed_point(flownet):
+def steady_flows(flownet):
     """
     The fixed points are given by:
         \sum_j (p_j-p_i)

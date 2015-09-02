@@ -44,7 +44,7 @@ class TestCore:
         for u, v in self.two_node_net.edges():
             self.two_node_net[u][v]['weight'] = K
 
-        fp_2node = self.two_node_net.fixed_point()
+        fp_2node = self.two_node_net.steady_flows()
         assert_almost_equal(fp_2node[(1, 2)], 1, places=4)
 
     @given(st.floats(min_value=0.0001, max_value=10))
@@ -53,7 +53,7 @@ class TestCore:
         for u, v in self.ring_net_even.edges():
             self.ring_net_even[u][v]['weight'] = K
 
-        fp_ring = self.ring_net_even.fixed_point()
+        fp_ring = self.ring_net_even.steady_flows()
         assert(np.allclose([flow - (u % 2 - 0.5)
                             for (u, v), flow in fp_ring.items()], 0, atol=1e-6))
 
@@ -64,7 +64,7 @@ class TestCore:
             self.ring_net_odd[u][v]['weight'] = K
 
         nnodes = self.ring_net_odd.number_of_nodes()
-        fp_ring = self.ring_net_odd.fixed_point()
+        fp_ring = self.ring_net_odd.steady_flows()
         fp_ring_array = [fp_ring[(i, (i + 1) % nnodes)] for i in range(nnodes)]
         fp_exact_array = [-1, 0, 1, 2, 1, 0, -1, -2]
 

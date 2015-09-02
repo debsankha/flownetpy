@@ -2,7 +2,6 @@ from  __future__ import division
 
 import numpy as np
 import networkx as nx
-from math import sin, asin, pi
 from scipy.integrate import ode
 
 from .tools import FlowDict
@@ -11,7 +10,7 @@ TMAX = 200
 TOL = 10e-6
 NTRY=10
 
-def fixed_point(flownet, initguess=None, extra_output=True):
+def steady_flows(flownet, initguess=None, extra_output=True):
     """
     Computes the steady state flows. 
 
@@ -33,7 +32,7 @@ def fixed_point(flownet, initguess=None, extra_output=True):
         return None, {'initguess': initguess}
 
     node_indices = {node: idx for idx, node in enumerate(flownet.nodes())}
-    flows = FlowDict({(u, v): sin(thetas[node_indices[u]] - thetas[node_indices[v]])*
+    flows = FlowDict({(u, v): np.sin(thetas[node_indices[u]] - thetas[node_indices[v]])*
         dat.get(flownet.weight_attr, 1) for (u, v, dat) in flownet.edges(data=True)})
 
     if extra_output:
@@ -147,7 +146,7 @@ def _omega(graph, cycles, thetas):
         phasediffs_cycle = _mod_pi(angles_cycle - np.roll(angles_cycle, 1))
 
 
-        omega = np.sum(phasediffs_cycle) / pi / 2
+        omega = np.sum(phasediffs_cycle) / np.pi / 2
         omegas.append(omega)
     return omegas
 
