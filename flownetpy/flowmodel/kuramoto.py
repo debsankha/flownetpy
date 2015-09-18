@@ -2,11 +2,11 @@ from  __future__ import division
 
 import numpy as np
 import networkx as nx
-from scipy.integrate import ode
+from scipy.integrate import odeint
 
 from .tools import FlowDict
 
-TMAX = 200
+TMAX = 600
 TOL = 10e-6
 NTRY=10
 
@@ -103,23 +103,7 @@ def _has_converged(time_series, window_size=0):
     return np.allclose(np.var(time_series[-window_size:, :], axis=0), 0)
 
 
-def odeint(func, x0, t=None, args=None):
-    """
-    Integrate an ode for time array t
-    """
-    r = ode(func).set_integrator('vode', method='bdf')
-    r.set_initial_value(x0, t[0]).set_f_params(*args)
-
-    res = np.zeros((t.size, x0.size))
-    res[0,:] = x0
-
-    for idx, tnow in enumerate(t[1:]):
-        r.integrate(tnow)
-        res[idx+1, :] = r.y
-    return res
-
-
-def _kuramoto_ode(t, th, M_I, M_I_w, P):
+def _kuramoto_ode(th, t, M_I, M_I_w, P):
     """
     Args:
 	    th: theta, array with size=nnodes
@@ -182,3 +166,52 @@ def _mod_pi(angle):
     """
     rem = np.remainder(angle, 2 * np.pi)
     return np.where(rem<=np.pi, rem, rem-2*np.pi)
+
+
+def projector_rotating(size):
+    X=np.diag(np.arange(1, size), k=-1)[:,:-1]
+    X[np.triu_indices_from(X,k=0)]=-1
+    
+    colnorms=np.linalg.norm(X, axis=0)
+    
+    return X/colnorms[np.newaxis, :]  #Normalize
+
+def contract_map(thetas, G, inputs, K):
+    V=projector_rotating(thetas.shape[0]+1)
+    B=nx.incidence_matrix(G, weight=None, oriented=True).toarray()
+    
+    bTv=np.dot(B.T, V)
+    
+    W=np.diag(np.sinc(np.dot(bTv, thetas)))
+    
+    op = np.dot(bTv.T, np.dot(W, bTv))
+    om_bar=np.dot(V.T, inputs)
+    return np.linalg.solve(op*K, om_bar)
+
+
+def fp_by_map(flownet, K, initguess = None):
+    P = np.array([flownet.node[node]['input'] for node in flownet.nodes()])
+    V = projector_rotating(flownet.number_of_nodes())
+
+    if initguess is None:
+        initguess = np.random.random(flownet.number_of_nodes())
+
+    thetas = np.dot(V.T, initguess)
+
+    maxstep = 500
+    tol = 10e-4
+
+    diff = tol+1
+    nstep = 0
+
+    while nstep < maxstep and diff > tol:
+        newthetas = contract_map(thetas, flownet, P, K)
+        diff = np.linalg.norm(newthetas - thetas)
+        thetas = newthetas
+        nstep += 1
+
+
+    return np.dot(V, thetas)
+
+   
+
