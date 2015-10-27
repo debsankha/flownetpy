@@ -7,10 +7,10 @@ from scipy.integrate import odeint
 from .tools import FlowDict
 
 TMAX = 600
-TOL = 10e-6
+TOL = 10e-3
 NTRY=10
 
-def steady_flows(flownet, initguess=None, extra_output=True):
+def steady_flows(flownet, initguess=None, extra_output=True, tmax = TMAX, tol = TOL):
     """
     Computes the steady state flows. 
 
@@ -26,7 +26,7 @@ def steady_flows(flownet, initguess=None, extra_output=True):
             data = {initguess: the_initial_condition, 'thetas': steady_state_thetas, 'omega': winding_vector}
     """
 
-    thetas, initguess = _try_find_fps(NTRY, flownet, initguess=initguess)
+    thetas, initguess = _try_find_fps(NTRY, flownet, initguess=initguess, tmax = tmax, tol = tol)
 
     if thetas is None:
         return None, {'initguess': initguess}
@@ -59,7 +59,7 @@ def _try_find_fps(ntry, flownet, tmax=TMAX, tol=TOL, initguess=None):
         If no fixed point is found, returns (None, initguess)
     """
 
-    dt = tmax / 1000
+    dt = tmax / 100
 
     if initguess is not None: # then use the specified initguess    
         sol = _evolve(flownet, np.arange(0, tmax, dt), initguess = initguess)
@@ -94,9 +94,11 @@ def _evolve(flownet, tarr, initguess=None):
 def _has_converged(time_series, window_size=0):
     """
     Detects if the time series has converged, by
-    checking the values during the window given by 'window_size'
+    checking the values during the window given by 'window_size'.
+    Removes the baseline from the timeseries first by subtracting the average
     """
-
+    
+    time_series -= np.average(time_series, axis =1).reshape(1, -1).T # To take care of rotating center
     if window_size == 0:  # The window over which time series must be constant
         window_size = time_series.shape[0]//10 
 
