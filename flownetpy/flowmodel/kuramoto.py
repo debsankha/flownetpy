@@ -100,7 +100,7 @@ def _has_converged(time_series, window_size=0):
     if window_size == 0:  # The window over which time series must be constant
         window_size = time_series.shape[0]//10 
 
-    return np.allclose(np.var(time_series[-window_size:, :], axis=1), 0)
+    return np.allclose(np.var(time_series[-window_size:, :], axis=0), 0)
 
 
 def odeint(func, x0, t=None, args=None):
