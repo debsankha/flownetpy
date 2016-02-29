@@ -4,7 +4,7 @@ A module for flow network simulations
 
 from __future__ import division, print_function
 import networkx as nx
-__all__ = ['FlowNetwork']
+__all__ = ['FlowNetwork', 'flowmodel']
 
 
 class FlowNetwork(nx.Graph):
