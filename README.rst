@@ -16,6 +16,8 @@ A python package to study flow networks
    :target: https://coveralls.io/github/debsankha/flownetpy?branch=master 
    :alt: coverage
 
+.. image:: https://zenodo.org/badge/21073/debsankha/flownetpy.svg
+   :target: https://zenodo.org/badge/latestdoi/21073/debsankha/flownetpy
 
 This package contains tools to simulate a flow
 according to user-definable flowmodels (e.g. linear Poiseuillie flow)
