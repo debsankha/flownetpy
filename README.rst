@@ -19,6 +19,9 @@ A python package to study flow networks
 .. image:: https://zenodo.org/badge/21073/debsankha/flownetpy.svg
    :target: https://zenodo.org/badge/latestdoi/21073/debsankha/flownetpy
 
+.. image:: http://img.shields.io/:license-gpl3-blue.svg?style=flat-square)]
+   :target: https://raw.githubusercontent.com/debsankha/flownetpy/master/LICENSE
+
 This package contains tools to simulate a flow
 according to user-definable flowmodels (e.g. linear Poiseuillie flow)
 on any graph.
