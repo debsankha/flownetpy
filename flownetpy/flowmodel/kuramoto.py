@@ -103,12 +103,17 @@ def _has_converged(time_series, window_size=0):
     return np.allclose(np.var(time_series[-window_size:, :], axis=0), 0)
 
 
-def odeint(func, x0, t=None, args=None):
+def odeint(func, x0, t=None, args=None, jac = None):
     """
     Integrate an ode for time array t
     """
-    r = ode(func).set_integrator('vode', method='bdf')
-    r.set_initial_value(x0, t[0]).set_f_params(*args)
+    if jac:
+        r = ode(func, func).set_integrator('vode', method='bdf')
+        r.set_initial_value(x0, t[0]).set_f_params(*args)
+        r.set_jac_params(*args)
+    else:
+        r = ode(func).set_integrator('vode', method='bdf')
+        r.set_initial_value(x0, t[0]).set_f_params(*args)
 
     res = np.zeros((t.size, x0.size))
     res[0,:] = x0
@@ -130,7 +135,8 @@ def _kuramoto_ode(t, th, M_I, M_I_w, P):
     """
     return P - np.dot(M_I_w, np.sin(np.dot(M_I.T, th)))
 
-
+def _kuramoto_jacobian(t, th, M_I, M_I_w, P):
+    return -np.dot(M_I_w, np.cos(np.dot(M_I.T, th)))
 
 def _omega(graph, cycles, thetas):
     """
