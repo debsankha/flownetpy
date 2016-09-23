@@ -2,7 +2,7 @@ import hypothesis.strategies as st
 from hypothesis import given
 import numpy as np
 
-from flownetpy.flowmodel.tools import FlowDict
+from flownetpy.tools import FlowDict
 
 _MAX=10000
 _MIN=-10000

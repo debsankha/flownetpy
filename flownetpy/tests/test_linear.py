@@ -3,8 +3,7 @@ import hypothesis.strategies as st
 
 from nose.tools import *
 
-from flownetpy import FlowNetwork
-from flownetpy.flowmodel import linear
+from flownetpy import LinearFlowNetwork
 
 import numpy as np
 import networkx as nx
@@ -19,7 +18,7 @@ class TestCore:
         G = nx.Graph()
         G.add_edge(1, 2, weight=self.K_stable)
         inputs = {1: 1, 2: -1}
-        self.two_node_net = FlowNetwork(G, inputs, linear, weight='weight')
+        self.two_node_net = LinearFlowNetwork(G, inputs, weight='weight')
 
         # setup a ring network with inputs -1 +1 -1 +1...
         self.ring_size = 8
@@ -28,14 +27,14 @@ class TestCore:
             ring_graph[u][v]['weight'] = self.K_stable
         inputs = {
             node: (node % 2 - 0.5) * 2 for node in np.arange(self.ring_size)}
-        self.ring_net_even = FlowNetwork(
-            ring_graph, inputs, linear, weight='weight')
+        self.ring_net_even = LinearFlowNetwork(
+            ring_graph, inputs, weight='weight')
 
         # setup a ring network with inputs +1 +1 +1 +1 -1 -1 -1 -1 ...
         inputs = {node: (int(node < self.ring_size / 2) - 0.5)
                   * 2 for node in np.arange(self.ring_size)}
-        self.ring_net_odd = FlowNetwork(
-            ring_graph, inputs, linear, weight='weight')
+        self.ring_net_odd = LinearFlowNetwork(
+            ring_graph, inputs, weight='weight')
 
     # Test fixed points for simple networks
     @given(st.floats(min_value=0.0001, max_value=10))
