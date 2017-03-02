@@ -14,7 +14,7 @@ NTRY=10
 
 
 class KuramotoNetwork(FlowNetwork):
-    def steady_flows(self, initguess=None, extra_output=True):
+    def steady_flows(self, initguess=None, extra_output=False):
         """
         Computes the steady state flows. 
 
@@ -33,7 +33,10 @@ class KuramotoNetwork(FlowNetwork):
         thetas, initguess = self._try_find_fps(NTRY, initguess=initguess)
 
         if thetas is None:
-            return None, {'initguess': initguess}
+            if extra_output:
+                return None, {'initguess': initguess}
+            else:
+                return None
 
         node_indices = {node: idx for idx, node in enumerate(self.nodes())}
         flows = FlowDict({(u, v): np.sin(thetas[node_indices[u]] - thetas[node_indices[v]])*

@@ -4,7 +4,7 @@ A module for flow network simulations
 
 from __future__ import division, print_function
 import networkx as nx
-
+from numbers import Number
 
 class FlowNetwork(nx.Graph):
     """
@@ -30,7 +30,17 @@ class FlowNetwork(nx.Graph):
         flowmodel: class:`flowmodel` module.
         """
         nx.Graph.__init__(self, graph)
-        self.weight_attr = weight
+        if isinstance(weight, Number):
+            # assign uniform weight to all edges
+            for u,v in self.edges():
+                self[u][v]['weight'] = weight
+            self.weight_attr = 'weight'
+        elif isinstance(weight, str):
+            # assume graph aupplied already has specified weights
+            # only point self.weight_attr to the correct attribute
+            self.weight_attr = weight
+        else:
+            raise ValueError("We do not understand the meaning of weight %r"%weight)
 
         if isinstance(inputs, dict):
             # then inputs is a dictionary
@@ -40,7 +50,7 @@ class FlowNetwork(nx.Graph):
             # Assume inputs is a list-like object with
             # the same order as graph.nodes()
             for node, inpt in zip(graph.nodes(), inputs):
-                self.node[node]['input'] = inputs[node]
+                self.node[node]['input'] = inpt
 
     def steady_flows(self, **kwargs):
         """
@@ -49,7 +59,7 @@ class FlowNetwork(nx.Graph):
         Keyword Args
         ------------
             Whatever is required by the flows method of the flowmodel. 
-            
+
         Returns
         -------
         F: dictionary
