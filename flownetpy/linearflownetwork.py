@@ -20,7 +20,8 @@ class LinearFlowNetwork(FlowNetwork):
         L = nx.laplacian_matrix(self).toarray()
         I = np.array([self.node[n]['input'] for n in self.nodes()])
 
-        pressures = np.insert(np.linalg.solve(L[1:, 1:], I[1:]), 0, 0)
+#        pressures = np.insert(np.linalg.solve(L[1:, 1:], I[1:]), 0, 0)
+        pressures = np.dot(np.linalg.pinv(L), I)
         node_indices = {node: idx for idx, node in enumerate(self.nodes())}
         flows = FlowDict({(u, v): (pressures[node_indices[u]] - pressures[node_indices[v]]) * dat.get(
             self.weight_attr, 1) for (u, v, dat) in self.edges(data=True)})
