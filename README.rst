@@ -34,7 +34,7 @@ Usage
 >>>
 >>> C=nx.cycle_graph(4)
 >>> I=np.array([1,-1,1,-1])
->>> KK=fn.LinearFlowNetwork(C,I)
+>>> KK=fn.LinearFlowNetwork(C,I, weight=1)
 >>> 
 >>> KK.steady_flows()
 {(0, 1): 0.49999999999999994,
