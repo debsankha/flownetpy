@@ -26,16 +26,17 @@ This package contains tools to simulate a flow
 according to user-definable flowmodels (e.g. linear Poiseuillie flow)
 on any graph.
 
+This is a module for simulating flow networks. 
+
 Usage
 =====
->>> from flownetpy import FlowNetwork
->>> from flownetpy.flowmodels import linear
+>>> import flownetpy as fn
 >>>
 >>> C=nx.cycle_graph(4)
 >>> I=np.array([1,-1,1,-1])
->>> KK=FlowNetwork(C,I,linear)
+>>> KK=fn.LinearFlowNetwork(C,I)
 >>> 
->>> KK.fixed_point()
+>>> KK.steady_flows()
 {(0, 1): 0.49999999999999994,
 (0, 3): 0.49999999999999956,
 (1, 2): -0.5000000000000006,
